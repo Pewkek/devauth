@@ -7,7 +7,7 @@ end
 if(SERVER) then
 
 if not sql.TableExists("devauth") then
-  sql.Query("CREATE TABLE devauth(id INTEGER PRIMARY KEY, steamid TEXT);")
+  sql.Query("CREATE TABLE devauth(id INTEGER PRIMARY KEY, steamid TEXT UNIQUE);")
 end
 
 MsgC(Color(0,190,255),"[DevAuth] ",Color(255,255,255),"DevAuth initialized")
