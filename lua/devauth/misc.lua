@@ -52,3 +52,15 @@ function DevAuth.getUser( target )
 
   return plyMatches[ 1 ]
 end
+
+function DevAuth.ParseSid(sidString)
+  local sidInput = string.lower(string.Trim(sidString, "%s"))
+
+  if(string.match(sidInput, "^steam_[0-5]:[01]:%d+$", 1)) then
+    return util.SteamIDTo64(sidInput)
+  elseif(string.match(sidInput, "^%d+$")) then
+    return sidInput
+  end
+
+  return nil
+end

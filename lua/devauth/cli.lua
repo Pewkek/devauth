@@ -6,7 +6,7 @@ function DevAuth.HandleConsole(ply,cmd,args,argStr)
     if(CLIENT) then
       MsgC(Color(255,255,255),"\n\n###DevAuth - Help###\n\tdevauth list\tShows currently authed users\n\tdevauth help\tThis message\n\n\n\n\n")
     elseif(SERVER) then
-      MsgC(Color(255,255,255),"\n\n###DevAuth - Help###\n\tdevauth list\tShows currently authed users\n\tdevauth help\tThis message\n\tdevauth adduser\tAdds an user to developers\n\tdevauth adduserid\tAdds an SteamID64 to developers\n\tdevauth removeuser\tRemoves an user from developers\n\tdevauth removeuserid\tRemoves an SteamID64 from developers\n\n\n\n\n")
+      MsgC(Color(255,255,255),"\n\n###DevAuth - Help###\n\tdevauth list\tShows currently authed users\n\tdevauth help\tThis message\n\tdevauth adduser\tAdds user to developers\n\tdevauth adduserid\tAdds SteamID/SteamID64 to developers\n\tdevauth removeuser\tRemoves user from developers\n\tdevauth removeuserid\tRemoves SteamID/SteamID64 from developers\n\n\n\n\n")
     end
   elseif(args[1] == "list") then
     local AuthedUsersStr = ""
@@ -52,14 +52,24 @@ function DevAuth.HandleConsole(ply,cmd,args,argStr)
   elseif(args[1] == "adduserid") then
     if(SERVER) then
       if(args[2]) then
-        tgt, err = DevAuth.AddUserID(args[2])
+
+        local toAdd = DevAuth.ParseSid(args[2])
+
+        print(toAdd)
+
+        if not toAdd then
+          MsgC(Color(0, 190, 255), "[DevAuth] ", Color(255, 0, 0), "Error: Cannot determine SteamID type.\n")
+        end
+
+        tgt, err = DevAuth.AddUserID(toAdd)
         if(err) then
           MsgC(Color(0,190,255),"[DevAuth] ",Color(255,0,0),"ERROR - "..err.."\n")
+          return
         else
-          MsgC(Color(0,190,255),"[DevAuth] ",Color(255,255,255),"Added "..tgt.." to developers group\n")
+          MsgC(Color(0,190,255),"[DevAuth] ",Color(255,255,255),"Added "..toAdd.." to developers group\n")
         end
       else
-        MsgC(Color(255,255,255),"devauth adduserid steamid64\tAdds SteamID64 from developers group\n")
+        MsgC(Color(255,255,255),"devauth adduserid [steamid/steamid64]\tAdds SteamID/SteamID64 to developers group\n")
       end
     elseif(CLIENT) then
       MsgC(Color(0,190,255),"[DevAuth] ",Color(255,0,0),"You're not authorized\n")
@@ -67,14 +77,25 @@ function DevAuth.HandleConsole(ply,cmd,args,argStr)
   elseif(args[1] == "removeuserid") then
     if(SERVER) then
       if(args[2]) then
+        
+        local toRem = DevAuth.ParseSid(args[2])
+
+        print(toRem)
+
+        if not toRem then
+          MsgC(Color(0, 190, 255), "[DevAuth] ", Color(255, 0, 0), "Error: Cannot determine SteamID type.\n")
+        end
+
         tgt, err = DevAuth.DelUserID(args[2])
+
         if(err) then
           MsgC(Color(0,190,255),"[DevAuth] ",Color(255,0,0),"ERROR - "..err.."\n")
+          return
         else
           MsgC(Color(0,190,255),"[DevAuth] ",Color(255,255,255),"Removed "..tgt.." from developers group\n")
         end
       else
-        MsgC(Color(255,255,255),"devauth removeuserid steamid64\tRemoves SteamID64 from developers group\n")
+        MsgC(Color(255,255,255),"devauth removeuserid [steamid/steamid64]\tRemoves SteamID/SteamID64 from developers group\n")
       end
     elseif(CLIENT) then
       MsgC(Color(0,190,255),"[DevAuth] ",Color(255,0,0),"You're not authorized\n")
