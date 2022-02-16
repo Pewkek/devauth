@@ -8,8 +8,6 @@ if SERVER then
 	hook.Add("PlayerConnect", "SetupEPOELuaDev", function()
 			epoe.CanSubscribe = function(pl,unsubscribe)
 
-				print("Can subscribe? "..tostring(pl))
-
 				if(!IsValid(pl)) then return false end
 				return pl:IsDev()
 			end
